@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour {
     private int _jumpforce = 200;
     private float _movespeed = 2.5f;
 	private bool _facingright = true;
-	private bool _grounded = true;
     private Animator _animator;
 
 	// Use this for initialization
@@ -16,10 +15,32 @@ public class PlayerController : MonoBehaviour {
 		_animator = GetComponent<Animator>();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		_rb.velocity = new Vector2 (0f, _rb.velocity.y);
-		_grounded = (_rb.velocity.y == 0);
+    bool IsGrounded()
+    {
+        if (Mathf.Abs(_rb.velocity.y) < 0.001f)
+            return true;
+        return false;
+    }
+
+    bool IsMoving()
+    {
+        if (Mathf.Abs(_rb.velocity.x) < 0.001f && Mathf.Abs(_rb.velocity.y) < 0.001f)
+            return false;
+        return true;
+    }
+
+    void FixedUpdate()
+    {
+        Debug.Log(_rb.velocity.x.ToString() + ", " + _rb.velocity.y.ToString());
+    }
+
+    // Update is called once per frame
+    void Update () {
+        _animator.SetBool("Grounded", IsGrounded());
+        _animator.SetBool("IsMoving", IsMoving());
+
+        _rb.velocity = new Vector2 (0f, _rb.velocity.y);
+        
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
@@ -36,15 +57,11 @@ public class PlayerController : MonoBehaviour {
 			_rb.velocity += Vector2.right * _movespeed;
 			_facingright = true;
         }
-		if(Input.GetKeyDown(KeyCode.Z) && _grounded)
+		if(Input.GetKeyDown(KeyCode.Z) && IsGrounded())
         {
             _rb.AddForce(Vector2.up * _jumpforce);
-            _grounded = false;
-            _animator.SetInteger("State", 2);
+            //IsGrounded() = false;
         }
-        if (_grounded)
-            _animator.SetInteger("State", _rb.velocity.x == 0 ? 0 : 1);
-
 
     }
 
