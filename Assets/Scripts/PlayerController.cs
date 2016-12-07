@@ -5,8 +5,7 @@ public class PlayerController : MonoBehaviour {
 
 	private Rigidbody2D _rb;
     private int _jumpforce = 200;
-    private float _movespeed = 2.5f;
-	private bool _facingright = true;
+    private float _movespeed = 1.75f;
     private Animator _animator;
 
 	// Use this for initialization
@@ -31,7 +30,7 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        Debug.Log(_rb.velocity.x.ToString() + ", " + _rb.velocity.y.ToString());
+        //Debug.Log(_rb.velocity.x.ToString() + ", " + _rb.velocity.y.ToString());
     }
 
     // Update is called once per frame
@@ -47,7 +46,6 @@ public class PlayerController : MonoBehaviour {
 			//transform.Translate(Vector3.left * _movespeed * Time.deltaTime);
 			GetComponent<SpriteRenderer> ().flipX = true;
 			_rb.velocity += Vector2.left * _movespeed;
-			_facingright = false;
         }
 
         if (Input.GetKey(KeyCode.RightArrow))
@@ -55,7 +53,6 @@ public class PlayerController : MonoBehaviour {
             //transform.Translate(Vector3.right * _movespeed * Time.deltaTime);
 			GetComponent<SpriteRenderer> ().flipX = false;
 			_rb.velocity += Vector2.right * _movespeed;
-			_facingright = true;
         }
 		if(Input.GetKeyDown(KeyCode.Z) && IsGrounded())
         {
@@ -64,9 +61,21 @@ public class PlayerController : MonoBehaviour {
         }
 
     }
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Button")
+        {
+            col.gameObject.GetComponent<ButtonController>().PlayerLeft();
+        }
+    }
 
-	void OnCollisionStay2D(Collision2D col)
-	{
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Button")
+        {
+            col.gameObject.GetComponent<ButtonController>().PlayerEntered();
+        }
+    }
 
-	}
+
 }
