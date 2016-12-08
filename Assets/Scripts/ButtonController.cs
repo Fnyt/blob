@@ -20,7 +20,7 @@ public class ButtonController : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X) && !_pressed)
+        if (Input.GetKeyDown(KeyCode.X) && !_pressed && _playerin)
         {
             Press();
         }
